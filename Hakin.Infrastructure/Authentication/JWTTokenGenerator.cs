@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Hakin.Application.Common.Interfaces.Authentication;
 using Hakin.Application.Common.Interfaces.Services;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Hakin.Infrastructure.Authentication;
@@ -9,10 +10,12 @@ namespace Hakin.Infrastructure.Authentication;
 public class JWTTokenGenerator : IJWTTokenGenerator
 {
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly JWTSettings _jwtSettings;
 
-    public JWTTokenGenerator(IDateTimeProvider dateTimeProvider)
+    public JWTTokenGenerator(IDateTimeProvider dateTimeProvider, IOptions<JWTSettings> jwtOptions)
     {
         _dateTimeProvider = dateTimeProvider;
+        _jwtSettings = jwtOptions.Value;
     }
 
     public string GenerateToken(Guid userId, string email, string firstName, string lastName)
@@ -26,11 +29,12 @@ public class JWTTokenGenerator : IJWTTokenGenerator
         };
 
         var securityToken = new JwtSecurityToken(
-            issuer: "Hakin",
+            issuer: _jwtSettings.Issuer,
+            audience: _jwtSettings.Audience,
             claims: claims,
-            expires: _dateTimeProvider.UtcNow.AddMinutes(60),
+            expires: _dateTimeProvider.UtcNow.AddMinutes(_jwtSettings.ExpiryInMinutes),
             signingCredentials: new SigningCredentials(
-                new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("super-secret-key")),
+                new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
                 SecurityAlgorithms.HmacSha256Signature
             )
         );
