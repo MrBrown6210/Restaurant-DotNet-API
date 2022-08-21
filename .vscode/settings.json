@@ -3,8 +3,6 @@
     "**/bin": true,
     "**/obj": true
   },
-  "cSpell.words": [
-    "Hakin"
-  ],
+  "cSpell.words": ["Hakin", "Hmac", "IJWT"],
   "omnisharp.useModernNet": true
 }
