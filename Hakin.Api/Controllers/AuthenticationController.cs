@@ -20,10 +20,10 @@ public class AuthenticationController : ControllerBase
     {
         var result = _authenticationService.Register(request.FirstName, request.LastName, request.Email, request.Password);
         var response = new AuthenticationResponse(
-            result.Id,
-            result.FirstName,
-            result.LastName,
-            result.Email,
+            result.User.Id,
+            result.User.FirstName,
+            result.User.LastName,
+            result.User.Email,
             result.Token
         );
         return Ok(response);
@@ -34,10 +34,10 @@ public class AuthenticationController : ControllerBase
     {
         var result = _authenticationService.Login(request.Email, request.Password);
         var response = new AuthenticationResponse(
-            Id: result.Id,
-            FirstName: result.FirstName,
-            LastName: result.LastName,
-            Email: result.Email,
+            Id: result.User.Id,
+            FirstName: result.User.FirstName,
+            LastName: result.User.LastName,
+            Email: result.User.Email,
             Token: result.Token
         );
         return Ok(response);

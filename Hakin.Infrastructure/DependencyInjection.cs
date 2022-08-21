@@ -1,6 +1,8 @@
 using Hakin.Application.Common.Interfaces.Authentication;
+using Hakin.Application.Common.Interfaces.Persistence;
 using Hakin.Application.Common.Interfaces.Services;
 using Hakin.Infrastructure.Authentication;
+using Hakin.Infrastructure.Persistence;
 using Hakin.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +18,8 @@ public static class DependencyInjection
         services.Configure<JWTSettings>(configuration.GetSection(JWTSettings.SectionName));
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddSingleton<IJWTTokenGenerator, JWTTokenGenerator>();
+
+        services.AddScoped<IUserRepository, UserRepository>();
         return services;
     }
 }
