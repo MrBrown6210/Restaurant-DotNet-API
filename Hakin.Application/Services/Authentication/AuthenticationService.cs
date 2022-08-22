@@ -1,5 +1,7 @@
+using ErrorOr;
 using Hakin.Application.Common.Interfaces.Authentication;
 using Hakin.Application.Common.Interfaces.Persistence;
+using Hakin.Domain.Common.Errors;
 using Hakin.Domain.Entities;
 
 namespace Hakin.Application.Services.Authentication;
@@ -15,18 +17,18 @@ public class AuthenticationService : IAuthenticationService
         _userRepository = userRepository;
     }
 
-    public AuthenticationResult Login(string email, string password)
+    public ErrorOr<AuthenticationResult> Login(string email, string password)
     {
         // Check user exists
         if (_userRepository.GetByEmail(email) is not User user)
         {
-            throw new Exception("User does not exist");
+            return Errors.Authentication.InvalidCredential;
         }
 
         // Validate password
         if (user.Password != password)
         {
-            throw new Exception("Invalid password");
+            return Errors.Authentication.InvalidCredential;
         }
 
         // Gen JWT Token
@@ -38,12 +40,12 @@ public class AuthenticationService : IAuthenticationService
         );
     }
 
-    public AuthenticationResult Register(string firstName, string lastName, string email, string password)
+    public ErrorOr<AuthenticationResult> Register(string firstName, string lastName, string email, string password)
     {
         // Check user exists
         if (_userRepository.GetByEmail(email) is not null)
         {
-            throw new Exception("User already exist");
+            return Errors.User.DuplicateEmail;
         }
 
         // Create user (with unique ID)

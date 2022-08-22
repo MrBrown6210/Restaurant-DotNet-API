@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
+using ErrorOr;
+using Hakin.Api.Common.Http;
 
-namespace Hakin.Api.Error;
+namespace Hakin.Api.Common.Error;
 public class HakinProblemDetailsFactory : ProblemDetailsFactory
 {
     private readonly ApiBehaviorOptions _options;
@@ -89,7 +91,10 @@ public class HakinProblemDetailsFactory : ProblemDetailsFactory
             problemDetails.Extensions["traceId"] = traceId;
         }
 
-        problemDetails.Extensions.Add("custom", "value");
+        if (httpContext?.Items[HttpContextItemKeys.Errors] is List<ErrorOr.Error> errors)
+        {
+            problemDetails.Extensions.Add("errorCodes", errors.Select(e => e.Code));
+        }
 
     }
 }
