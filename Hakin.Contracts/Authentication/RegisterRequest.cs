@@ -1,4 +1,3 @@
-using System;
 namespace Hakin.Contracts.Authentication;
 
 public record RegisterRequest(

@@ -1,6 +1,6 @@
 using Hakin.Domain.Entities;
 
-namespace Hakin.Application.Services.Authentication;
+namespace Hakin.Application.Authentication.Common;
 
 public record AuthenticationResult(
     User User,
