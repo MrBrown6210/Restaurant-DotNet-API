@@ -3,6 +3,7 @@ using Hakin.Application.Authentication.Commands.Register;
 using Hakin.Application.Authentication.Common;
 using Hakin.Contracts.Authentication;
 using Hakin.Domain.Common.Errors;
+using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,25 +13,22 @@ namespace Hakin.Api.Controllers;
 public class AuthenticationController : ApiController
 {
     private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
 
-    public AuthenticationController(IMediator mediator)
+    public AuthenticationController(IMediator mediator, IMapper mapper)
     {
         _mediator = mediator;
+        _mapper = mapper;
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
-        var command = new RegisterCommand(
-            request.FirstName,
-            request.LastName,
-            request.Email,
-            request.Password
-        );
+        var command = _mapper.Map<RegisterCommand>(request);
         var authResult = await _mediator.Send(command);
 
         return authResult.Match(
-            result => Ok(MapAuthResult(result)),
+            result => Ok(_mapper.Map<AuthenticationResponse>(result)),
             errors => Problem(errors)
         );
     }
@@ -38,10 +36,7 @@ public class AuthenticationController : ApiController
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
-        var query = new LoginQuery(
-            request.Email,
-            request.Password
-        );
+        var query = _mapper.Map<LoginQuery>(request);
         var authResult = await _mediator.Send(query);
 
         if (authResult.FirstError == Errors.Authentication.InvalidCredential)
@@ -50,19 +45,8 @@ public class AuthenticationController : ApiController
         }
 
         return authResult.Match(
-            result => Ok(MapAuthResult(result)),
+            result => Ok(_mapper.Map<AuthenticationResponse>(result)),
             errors => Problem(errors)
-        );
-    }
-
-    private static AuthenticationResponse MapAuthResult(AuthenticationResult result)
-    {
-        return new AuthenticationResponse(
-            result.User.Id,
-            result.User.FirstName,
-            result.User.LastName,
-            result.User.Email,
-            result.Token
         );
     }
 }
