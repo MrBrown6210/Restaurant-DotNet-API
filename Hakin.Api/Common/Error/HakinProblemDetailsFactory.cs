@@ -95,6 +95,5 @@ public class HakinProblemDetailsFactory : ProblemDetailsFactory
         {
             problemDetails.Extensions.Add("errorCodes", errors.Select(e => e.Code));
         }
-
     }
 }
