@@ -10,5 +10,5 @@ API for [Restaurant-Angular](https://github.com/MrBrown6210/Restaurant-Angular)
 - [x] CQRS
 - [x] Auto Mapper
 - [x] Input validation
-- [] Restaurant Domain 
-- [] Database
+- [ ] Restaurant Domain 
+- [ ] Database
