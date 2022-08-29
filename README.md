@@ -11,3 +11,4 @@ API for [Restaurant-Angular](https://github.com/MrBrown6210/Restaurant-Angular)
 - [x] Auto Mapper
 - [x] Input validation
 - [] Restaurant Domain 
+- [] Database
